@@ -1,5 +1,7 @@
 pub mod config;
 pub mod db;
+pub mod stats;
+pub mod summary;
 pub mod tracking;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
