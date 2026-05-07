@@ -1,0 +1,11 @@
+{
+  "name": "timerecord-workspace",
+  "private": true,
+  "workspaces": [
+    "apps/desktop"
+  ],
+  "scripts": {
+    "dev": "npm --workspace apps/desktop run dev",
+    "test": "npm --workspace apps/desktop run test"
+  }
+}
