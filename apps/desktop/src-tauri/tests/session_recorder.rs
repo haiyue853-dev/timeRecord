@@ -58,3 +58,25 @@ fn keeps_latest_snapshot_as_current_after_window_switch() {
     assert_eq!(current.process_name, "chrome.exe");
     assert_eq!(current.window_title, "Rust Docs");
 }
+
+#[test]
+fn close_current_finishes_record_and_clears_current() {
+    let start = Utc::now();
+    let ended_at = start + Duration::seconds(135);
+    let snapshot = ForegroundSnapshot::new(7, "slack.exe", "Slack", "Daily Sync", start);
+
+    let mut recorder = SessionRecorder::new_for_test("boot-1");
+    recorder.observe(snapshot).unwrap();
+
+    let closed = recorder.close_current(ended_at).unwrap();
+
+    assert_eq!(closed.process_name, "slack.exe");
+    assert_eq!(closed.started_at, start);
+    assert_eq!(closed.ended_at, ended_at);
+    assert_eq!(closed.duration_seconds, 135);
+    assert!(recorder.current().is_none());
+
+    let records = recorder.records();
+    assert_eq!(records.len(), 1);
+    assert_eq!(records[0], closed);
+}
