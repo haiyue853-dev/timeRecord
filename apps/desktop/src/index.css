@@ -51,6 +51,13 @@ a {
   box-shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
 }
 
+.app-shell__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .app-shell__eyebrow {
   margin: 0 0 4px;
   font-size: 12px;
@@ -70,6 +77,7 @@ a {
   padding: 10px 16px;
   border-radius: 999px;
   color: #41506e;
+  background: rgba(65, 80, 110, 0.08);
 }
 
 .app-shell__nav-link.is-active {
