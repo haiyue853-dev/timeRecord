@@ -65,6 +65,10 @@ impl SessionRecorder {
         Some(record)
     }
 
+    pub fn current(&self) -> Option<&ForegroundSnapshot> {
+        self.current.as_ref()
+    }
+
     pub fn records(&self) -> Vec<ActivityRecord> {
         let mut records = self.records.clone();
         if let Some(current) = &self.current {
