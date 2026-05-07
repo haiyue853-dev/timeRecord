@@ -1,4 +1,7 @@
 use chrono::{Duration, Utc};
+use timerecord_lib::tracking::idle::IdleDecision;
+use timerecord_lib::tracking::media::MediaPlaybackState;
+use timerecord_lib::tracking::recorder::RecordingTick;
 use timerecord_lib::tracking::session::{ForegroundSnapshot, SessionRecorder};
 
 #[test]
@@ -79,4 +82,36 @@ fn close_current_finishes_record_and_clears_current() {
     let records = recorder.records();
     assert_eq!(records.len(), 1);
     assert_eq!(records[0], closed);
+}
+
+#[test]
+fn keeps_time_when_media_is_playing() {
+    let now = Utc::now();
+    let decision = IdleDecision::from_inputs(
+        now,
+        now - Duration::seconds(185),
+        true,
+        MediaPlaybackState::Playing,
+        180,
+    );
+
+    assert!(decision.count_as_active);
+    assert!(decision.media_playback_kept_alive);
+}
+
+#[test]
+fn pauses_when_idle_without_media_playback() {
+    let now = Utc::now();
+    let snapshot = ForegroundSnapshot::new(3, "notepad.exe", "Notepad", "notes.txt", now);
+    let tick = RecordingTick {
+        snapshot,
+        last_input_at: now - Duration::seconds(185),
+        media_state: MediaPlaybackState::Paused,
+        idle_seconds: 180,
+    };
+
+    let decision = tick.decide();
+
+    assert!(!decision.count_as_active);
+    assert!(!decision.media_playback_kept_alive);
 }
