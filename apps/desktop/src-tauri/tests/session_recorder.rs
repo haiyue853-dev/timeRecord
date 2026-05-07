@@ -14,9 +14,11 @@ fn switches_window_and_closes_previous_record() {
     recorder.observe(next).unwrap();
 
     let records = recorder.records();
-    assert_eq!(records.len(), 2);
+    assert_eq!(records.len(), 1);
     assert_eq!(records[0].duration_seconds, 90);
-    assert_eq!(records[1].process_name, "chrome.exe");
+
+    let current = recorder.current().unwrap();
+    assert_eq!(current.process_name, "chrome.exe");
 }
 
 #[test]
@@ -32,10 +34,11 @@ fn repeated_snapshot_for_same_window_keeps_single_current_record() {
     recorder.observe(repeated).unwrap();
 
     let records = recorder.records();
-    assert_eq!(records.len(), 1);
-    assert_eq!(records[0].process_name, "code.exe");
-    assert_eq!(records[0].started_at, start);
-    assert_eq!(records[0].duration_seconds, 0);
+    assert!(records.is_empty());
+
+    let current = recorder.current().unwrap();
+    assert_eq!(current.process_name, "code.exe");
+    assert_eq!(current.captured_at, start);
 }
 
 #[test]

@@ -69,23 +69,8 @@ impl SessionRecorder {
         self.current.as_ref()
     }
 
-    pub fn records(&self) -> Vec<ActivityRecord> {
-        let mut records = self.records.clone();
-        if let Some(current) = &self.current {
-            records.push(ActivityRecord {
-                boot_id: self.boot_id.clone(),
-                process_name: current.process_name.clone(),
-                app_name: current.app_name.clone(),
-                window_title: current.window_title.clone(),
-                window_handle: current.window_handle,
-                started_at: current.captured_at,
-                ended_at: current.captured_at,
-                duration_seconds: 0,
-                idle_rule_triggered: false,
-                media_playback_kept_alive: false,
-            });
-        }
-        records
+    pub fn records(&self) -> &[ActivityRecord] {
+        &self.records
     }
 }
 
