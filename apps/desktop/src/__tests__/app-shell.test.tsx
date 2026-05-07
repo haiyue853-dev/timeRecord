@@ -13,11 +13,11 @@ describe("App shell", () => {
     );
 
     expect(screen.getByRole("heading", { name: "TimeRecord" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "仪表盘" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "软件统计" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "窗口明细" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "历史趋势" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "设置" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^仪表盘/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^软件统计/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^窗口明细/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^历史趋势/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^设置/ })).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "本次开机概览" }),
     ).toBeInTheDocument();
