@@ -33,15 +33,15 @@ export const routes: RouteObject[] = [
       },
       {
         path: "apps",
-        element: page("应用", "集中管理需要在开机阶段恢复的应用。"),
+        element: page("软件统计", "查看本次开机涉及的软件数量、分类和恢复覆盖情况。"),
       },
       {
         path: "windows",
-        element: page("窗口", "记录并恢复每次开机时需要打开的窗口布局。"),
+        element: page("窗口明细", "查看待恢复窗口的标题、来源应用和布局信息。"),
       },
       {
         path: "history",
-        element: page("历史", "查看历史开机记录和恢复执行结果。"),
+        element: page("历史趋势", "按时间维度回看开机恢复结果和使用趋势变化。"),
       },
       {
         path: "settings",

@@ -2,9 +2,9 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
   { to: "/", label: "仪表盘", end: true },
-  { to: "/apps", label: "应用" },
-  { to: "/windows", label: "窗口" },
-  { to: "/history", label: "历史" },
+  { to: "/apps", label: "软件统计" },
+  { to: "/windows", label: "窗口明细" },
+  { to: "/history", label: "历史趋势" },
   { to: "/settings", label: "设置" },
 ];
 
