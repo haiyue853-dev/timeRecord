@@ -14,6 +14,10 @@ pub struct SummaryService {
 }
 
 impl SummaryService {
+    pub fn local_only(local: LocalSummaryProvider) -> Self {
+        Self { local, ai: None }
+    }
+
     pub fn with_failing_ai(local: LocalSummaryProvider) -> Self {
         Self {
             local,
