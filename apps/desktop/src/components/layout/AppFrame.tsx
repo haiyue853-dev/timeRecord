@@ -1,12 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-
-const navItems = [
-  { to: "/", label: "仪表盘", end: true },
-  { to: "/apps", label: "软件统计" },
-  { to: "/windows", label: "窗口明细" },
-  { to: "/history", label: "历史趋势" },
-  { to: "/settings", label: "设置" },
-];
+import { appSections } from "../../navigation";
 
 export function AppFrame() {
   return (
@@ -17,16 +10,16 @@ export function AppFrame() {
           <h1 className="app-shell__title">TimeRecord</h1>
         </div>
         <nav aria-label="主导航" className="app-shell__nav">
-          {navItems.map((item) => (
+          {appSections.map((section) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
+              key={section.to}
+              to={section.to}
+              end={section.end}
               className={({ isActive }) =>
                 isActive ? "app-shell__nav-link is-active" : "app-shell__nav-link"
               }
             >
-              {item.label}
+              {section.label}
             </NavLink>
           ))}
         </nav>
