@@ -107,3 +107,79 @@ a {
   margin-top: 8px;
   color: #5f6f8f;
 }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.dashboard-metric,
+.summary-card,
+.settings-field,
+.settings-toggle,
+.stats-list__item {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(23, 32, 51, 0.04);
+}
+
+.dashboard-metric span,
+.summary-card__eyebrow {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5f6f8f;
+}
+
+.dashboard-metric strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+.dashboard-metric small {
+  display: block;
+  margin-top: 8px;
+  color: #5f6f8f;
+}
+
+.summary-card {
+  margin-top: 20px;
+}
+
+.summary-card__body {
+  margin-top: 10px;
+  color: #172033;
+}
+
+.stats-list {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.stats-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings-page {
+  display: grid;
+  gap: 16px;
+}
+
+.settings-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.settings-field,
+.settings-toggle {
+  display: grid;
+  gap: 8px;
+}

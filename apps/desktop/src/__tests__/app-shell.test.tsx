@@ -12,7 +12,7 @@ describe("App shell", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("TimeRecord")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "TimeRecord" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "仪表盘" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "软件统计" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "窗口明细" })).toBeInTheDocument();
