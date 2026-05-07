@@ -1,5 +1,6 @@
 pub mod config;
 pub mod db;
+pub mod tracking;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
