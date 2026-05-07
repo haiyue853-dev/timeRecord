@@ -18,3 +18,22 @@ fn switches_window_and_closes_previous_record() {
     assert_eq!(records[0].duration_seconds, 90);
     assert_eq!(records[1].process_name, "chrome.exe");
 }
+
+#[test]
+fn repeated_snapshot_for_same_window_keeps_single_current_record() {
+    let start = Utc::now();
+    let later = start + Duration::seconds(45);
+
+    let first = ForegroundSnapshot::new(1, "code.exe", "VS Code", "main.rs", start);
+    let repeated = ForegroundSnapshot::new(1, "code.exe", "VS Code", "main.rs", later);
+
+    let mut recorder = SessionRecorder::new_for_test("boot-1");
+    recorder.observe(first).unwrap();
+    recorder.observe(repeated).unwrap();
+
+    let records = recorder.records();
+    assert_eq!(records.len(), 1);
+    assert_eq!(records[0].process_name, "code.exe");
+    assert_eq!(records[0].started_at, start);
+    assert_eq!(records[0].duration_seconds, 0);
+}

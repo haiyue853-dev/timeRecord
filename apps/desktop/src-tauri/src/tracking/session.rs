@@ -32,7 +32,11 @@ impl SessionRecorder {
     }
 
     pub fn observe(&mut self, snapshot: ForegroundSnapshot) -> anyhow::Result<()> {
-        if self.current.is_none() {
+        if let Some(current) = &self.current {
+            if same_window(current, &snapshot) {
+                return Ok(());
+            }
+        } else {
             self.current = Some(snapshot);
             return Ok(());
         }
@@ -79,4 +83,11 @@ impl SessionRecorder {
         }
         records
     }
+}
+
+fn same_window(current: &ForegroundSnapshot, next: &ForegroundSnapshot) -> bool {
+    current.window_handle == next.window_handle
+        && current.process_name == next.process_name
+        && current.app_name == next.app_name
+        && current.window_title == next.window_title
 }
