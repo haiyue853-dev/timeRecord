@@ -4,5 +4,7 @@ target/
 apps/desktop/dist/
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/gen/
+build-output/
+docs/superpowers/
 .env
 .env.local

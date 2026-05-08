@@ -1,4 +1,4 @@
-pub const CURRENT_SCHEMA_VERSION: i32 = 1;
+pub const CURRENT_SCHEMA_VERSION: i32 = 2;
 
 pub const MIGRATIONS: &[(i32, &str)] = &[
     (
@@ -53,6 +53,12 @@ pub const MIGRATIONS: &[(i32, &str)] = &[
 
         CREATE INDEX IF NOT EXISTS idx_activity_records_process_name
             ON activity_records(process_name);
+        "#,
+    ),
+    (
+        2,
+        r#"
+        ALTER TABLE settings ADD COLUMN deepseek_api_key TEXT NOT NULL DEFAULT '';
         "#,
     ),
 ];

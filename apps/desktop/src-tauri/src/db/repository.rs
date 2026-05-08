@@ -20,13 +20,15 @@ impl SettingsRepository {
                 idle_seconds,
                 ai_enabled,
                 deepseek_base_url,
+                deepseek_api_key,
                 deepseek_model,
                 updated_at
-            ) VALUES (1, ?1, ?2, ?3, ?4, CURRENT_TIMESTAMP)
+            ) VALUES (1, ?1, ?2, ?3, ?4, ?5, CURRENT_TIMESTAMP)
             ON CONFLICT(id) DO UPDATE SET
                 idle_seconds = excluded.idle_seconds,
                 ai_enabled = excluded.ai_enabled,
                 deepseek_base_url = excluded.deepseek_base_url,
+                deepseek_api_key = excluded.deepseek_api_key,
                 deepseek_model = excluded.deepseek_model,
                 updated_at = CURRENT_TIMESTAMP
             "#,
@@ -34,6 +36,7 @@ impl SettingsRepository {
                 settings.idle_seconds as i64,
                 settings.ai_enabled,
                 settings.deepseek_base_url,
+                settings.deepseek_api_key,
                 settings.deepseek_model,
             ],
         )?;
@@ -46,7 +49,7 @@ impl SettingsRepository {
             .conn
             .query_row(
                 r#"
-                SELECT idle_seconds, ai_enabled, deepseek_base_url, deepseek_model
+                SELECT idle_seconds, ai_enabled, deepseek_base_url, deepseek_api_key, deepseek_model
                 FROM settings
                 WHERE id = 1
                 "#,
@@ -56,7 +59,8 @@ impl SettingsRepository {
                         idle_seconds: row.get::<_, i64>(0)? as u64,
                         ai_enabled: row.get(1)?,
                         deepseek_base_url: row.get(2)?,
-                        deepseek_model: row.get(3)?,
+                        deepseek_api_key: row.get(3)?,
+                        deepseek_model: row.get(4)?,
                     })
                 },
             )

@@ -101,6 +101,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-autostart",
  "tauri-plugin-log",
+ "windows",
 ]
 
 [[package]]

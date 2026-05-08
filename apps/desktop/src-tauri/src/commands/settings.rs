@@ -12,3 +12,14 @@ pub async fn get_settings(state: State<'_, AppState>) -> Result<AppSettings, Str
         .await
         .map_err(|error| error.to_string())
 }
+
+#[tauri::command]
+pub async fn update_settings(
+    state: State<'_, AppState>,
+    input: AppSettings,
+) -> Result<AppSettings, String> {
+    state
+        .replace_settings(input.clone())
+        .map_err(|error| error.to_string())?;
+    Ok(input)
+}

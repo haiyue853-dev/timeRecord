@@ -13,8 +13,11 @@
     "windows": [
       {
         "title": "TimeRecord",
-        "width": 800,
-        "height": 600,
+        "width": 1080,
+        "height": 720,
+        "minWidth": 560,
+        "minHeight": 420,
+        "center": true,
         "resizable": true,
         "fullscreen": false,
         "decorations": false,

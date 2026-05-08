@@ -1,10 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(default)]
 pub struct AppSettings {
     pub idle_seconds: u64,
     pub ai_enabled: bool,
     pub deepseek_base_url: String,
+    pub deepseek_api_key: String,
     pub deepseek_model: String,
 }
 
@@ -14,6 +16,7 @@ impl Default for AppSettings {
             idle_seconds: 180,
             ai_enabled: false,
             deepseek_base_url: "https://api.deepseek.com".into(),
+            deepseek_api_key: String::new(),
             deepseek_model: "deepseek-chat".into(),
         }
     }

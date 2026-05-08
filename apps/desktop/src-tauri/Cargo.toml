@@ -16,7 +16,7 @@ path = "src/lib.rs"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.6.1" }
+tauri-build = { version = "2.6.1", features = [] }
 
 [dependencies]
 anyhow = "1"
@@ -28,3 +28,10 @@ log = "0.4"
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-autostart = "2"
 tauri-plugin-log = "2"
+windows = { version = "0.61.3", features = [
+  "Win32_Foundation",
+  "Win32_System_Threading",
+  "Win32_System_SystemInformation",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_WindowsAndMessaging",
+] }
