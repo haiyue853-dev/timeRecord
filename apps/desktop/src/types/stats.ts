@@ -33,9 +33,11 @@ export interface HeatmapCell {
 
 export interface DashboardStats {
   totalActiveSeconds: number;
+  todayActiveSeconds: number;
   currentAppName: string;
   currentWindowTitle: string;
   apps: AppUsageItem[];
+  todayApps: AppUsageItem[];
   summary: string;
   encouragement: string;
   summarySource: string;

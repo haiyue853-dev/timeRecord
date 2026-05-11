@@ -5,7 +5,6 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { SettingsPage } from "./pages/SettingsPage";
-import { WindowsPage } from "./pages/WindowsPage";
 
 export const routes: RouteObject[] = [
   {
@@ -21,10 +20,6 @@ export const routes: RouteObject[] = [
         element: <AppsPage />,
       },
       {
-        path: "windows",
-        element: <WindowsPage />,
-      },
-      {
         path: "history",
         element: <HistoryPage />,
       },
@@ -34,7 +29,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: "*",
-        element: <PlaceholderPage title="未找到页面" description="这个页面还没有接入。" />,
+        element: <PlaceholderPage title="页面未找到" description="这个页面暂时不存在，请从左侧导航返回。" />,
       },
     ],
   },

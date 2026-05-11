@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createUsageDonutOption } from "../components/charts/UsageDonut";
 
 describe("createUsageDonutOption", () => {
-  it("enables hover enlarge and shows minute-based tooltip", () => {
+  it("enables hover enlarge and shows minute-and-percent tooltip", () => {
     const option = createUsageDonutOption([
       { appName: "Microsoft Edge", seconds: 600, category: "learning" },
       { appName: "VS Code", seconds: 1200, category: "development" },
@@ -10,7 +10,9 @@ describe("createUsageDonutOption", () => {
     const tooltip = Array.isArray(option.tooltip) ? option.tooltip[0] : option.tooltip;
     const series = Array.isArray(option.series) ? option.series[0] : option.series;
     const emphasis =
-      series && "emphasis" in series && typeof series.emphasis === "object" ? series.emphasis : undefined;
+      series && "emphasis" in series && typeof series.emphasis === "object"
+        ? series.emphasis
+        : undefined;
     const scaleSize =
       emphasis && "scaleSize" in emphasis && typeof emphasis.scaleSize === "number"
         ? emphasis.scaleSize
@@ -33,8 +35,9 @@ describe("createUsageDonutOption", () => {
         : "";
 
     expect(tooltip?.trigger).toBe("item");
-    expect(tooltipText).toContain("10 分钟 · 33%");
-    expect(series?.silent).toBe(true);
+    expect(tooltipText).toContain("10 分钟");
+    expect(tooltipText).toContain("33%");
+    expect(series?.silent).toBe(false);
     expect(scaleSize).toBe(10);
   });
 });

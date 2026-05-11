@@ -12,10 +12,10 @@ import { useStatsStore } from "./store/useStatsStore";
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
 const STATS_REFRESH_MS = 30 * 1000;
 const TODAY_NOTES = [
-  "先把今天最重要的一件事留在前台，别让注意力先退场。",
-  "先稳住一个小目标，节奏一旦建立，后面的推进会自然很多。",
+  "先把今天最重要的一件事留在前台，别让注意力先散开。",
+  "先稳住一个小目标，节奏一旦建立，后面会轻松很多。",
   "不用一下子做很多，只要让今天的第一段专注真正发生。",
-  "把注意力看成预算，优先投给最值得的那一块。",
+  "把注意力当成预算，优先投给最值得的那一块。",
   "先完成，再优化。今天能往前拱一点，就已经很有价值。",
 ];
 
@@ -25,7 +25,11 @@ export function shouldRefreshSummary(lastRefreshedAt: number | null, now: number
 
 export function getTodayNote(now: number) {
   const dayKey = new Date(now).toISOString().slice(0, 10);
-  const seed = dayKey.split("-").join("").split("").reduce((sum, digit) => sum + Number(digit), 0);
+  const seed = dayKey
+    .split("-")
+    .join("")
+    .split("")
+    .reduce((sum, digit) => sum + Number(digit), 0);
   return TODAY_NOTES[seed % TODAY_NOTES.length];
 }
 
@@ -69,7 +73,7 @@ function AppBootstrap() {
           lastSummaryRefreshedAt = now;
         }
       } catch (error) {
-        console.error("刷新鼓励语失败", error);
+        console.error("刷新总结和鼓励语失败", error);
       }
     };
 

@@ -16,7 +16,7 @@ export function AppFrame() {
             <div className="sidebar__hero">
               <p className="sidebar__eyebrow">TRACK. WATCH. REVIEW.</p>
               <h1 className="sidebar__title">TimeRecord</h1>
-              <p className="sidebar__copy">本地离线记录本次开机前台软件时长。</p>
+              <p className="sidebar__copy">本地离线记录本次开机与今日前台活跃时长。</p>
             </div>
 
             <nav aria-label="主导航" className="sidebar__nav">

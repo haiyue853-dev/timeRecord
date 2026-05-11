@@ -39,9 +39,11 @@ pub struct DashboardAppItem {
 #[derive(Debug, Clone)]
 pub struct DashboardSnapshot {
     pub total_active_seconds: i64,
+    pub today_active_seconds: i64,
     pub current_app_name: String,
     pub current_window_title: String,
     pub apps: Vec<DashboardAppItem>,
+    pub today_apps: Vec<DashboardAppItem>,
     pub summary: String,
     pub encouragement: String,
     pub summary_source: String,
@@ -58,6 +60,14 @@ struct UsageAggregate {
     seconds: i64,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+struct DailyAppHistory {
+    date: NaiveDate,
+    app_name: String,
+    category: String,
+    seconds: i64,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 struct PersistedHistory {
     current_boot_id: String,
@@ -66,6 +76,7 @@ struct PersistedHistory {
     current_apps: Vec<UsageAggregate>,
     current_trend_buckets: Vec<SessionTrendBucket>,
     daily_history: Vec<DailyHistory>,
+    daily_app_history: Vec<DailyAppHistory>,
 }
 
 #[derive(Debug)]
@@ -174,6 +185,14 @@ impl TrackingState {
                     elapsed,
                     category,
                 );
+                update_daily_app_history(
+                    &mut history.daily_app_history,
+                    now.date_naive(),
+                    &previous.app_name,
+                    category,
+                    elapsed,
+                );
+
                 history.current_boot_id = self.boot_id.clone();
                 history.current_boot_started_at = Some(self.started_at);
                 history.current_total_active_seconds = self.total_active_seconds;
@@ -345,17 +364,21 @@ impl AppState {
         let learning_heatmap = build_learning_heatmap(today, 28, &history.daily_history);
         let summary_bundle = LocalSummaryProvider::new(view.started_at.timestamp().unsigned_abs())
             .generate(&build_summary_context(today, &history.daily_history, &weekly_summary));
+        let today_active_seconds = history
+            .daily_history
+            .iter()
+            .find(|item| item.date == today)
+            .map(|item| item.total_active_seconds)
+            .unwrap_or(0);
+        let today_apps = build_today_apps(today, &history.daily_app_history);
 
         DashboardSnapshot {
             total_active_seconds: view.total_active_seconds,
+            today_active_seconds,
             current_app_name: view.current_app_name,
             current_window_title: view.current_window_title,
             apps: if view.apps.is_empty() {
-                vec![DashboardAppItem {
-                    app_name: "等待活动采集".into(),
-                    seconds: 0,
-                    category: "system".into(),
-                }]
+                vec![placeholder_app()]
             } else {
                 view.apps
                     .into_iter()
@@ -365,6 +388,11 @@ impl AppState {
                         category: item.category,
                     })
                     .collect()
+            },
+            today_apps: if today_apps.is_empty() {
+                vec![placeholder_app()]
+            } else {
+                today_apps
             },
             summary: summary_bundle.summary,
             encouragement: summary_bundle.encouragement,
@@ -430,6 +458,31 @@ impl AppState {
 
         Ok(())
     }
+}
+
+fn placeholder_app() -> DashboardAppItem {
+    DashboardAppItem {
+        app_name: "等待活动采集".into(),
+        seconds: 0,
+        category: "system".into(),
+    }
+}
+
+fn build_today_apps(date: NaiveDate, items: &[DailyAppHistory]) -> Vec<DashboardAppItem> {
+    let mut apps = items
+        .iter()
+        .filter(|item| item.date == date)
+        .cloned()
+        .collect::<Vec<_>>();
+    apps.sort_by(|left, right| right.seconds.cmp(&left.seconds));
+
+    apps.into_iter()
+        .map(|item| DashboardAppItem {
+            app_name: item.app_name,
+            seconds: item.seconds,
+            category: item.category,
+        })
+        .collect()
 }
 
 fn should_count_as_active(
@@ -531,6 +584,31 @@ fn update_daily_history(
 
     items.push(day);
     items.sort_by_key(|item| item.date);
+}
+
+fn update_daily_app_history(
+    items: &mut Vec<DailyAppHistory>,
+    date: NaiveDate,
+    app_name: &str,
+    category: &str,
+    elapsed_seconds: i64,
+) {
+    if let Some(app) = items
+        .iter_mut()
+        .find(|item| item.date == date && item.app_name == app_name)
+    {
+        app.seconds += elapsed_seconds;
+        app.category = category.to_string();
+        return;
+    }
+
+    items.push(DailyAppHistory {
+        date,
+        app_name: app_name.to_string(),
+        category: category.to_string(),
+        seconds: elapsed_seconds,
+    });
+    items.sort_by(|left, right| left.date.cmp(&right.date));
 }
 
 fn trend_bucket_started_at(session_started_at: DateTime<Utc>, now: DateTime<Utc>) -> DateTime<Utc> {

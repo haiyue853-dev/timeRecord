@@ -7,64 +7,60 @@ const dashboardSection = appSections[0];
 
 export function DashboardPage() {
   const totalActiveSeconds = useStatsStore((state) => state.totalActiveSeconds);
-  const currentAppName = useStatsStore((state) => state.currentAppName);
-  const currentWindowTitle = useStatsStore((state) => state.currentWindowTitle);
-  const apps = useStatsStore((state) => state.apps);
+  const todayActiveSeconds = useStatsStore((state) => state.todayActiveSeconds);
+  const todayApps = useStatsStore((state) => state.todayApps);
   const summary = useStatsStore((state) => state.summary);
   const encouragement = useStatsStore((state) => state.encouragement);
   const summarySource = useStatsStore((state) => state.summarySource);
-  const topApps = apps.slice(0, 3);
-  const totalMinutes = Math.floor(totalActiveSeconds / 60);
+  const visibleTodayApps = todayApps.filter((item) => item.seconds > 0);
+  const topApps = visibleTodayApps.slice(0, 3);
+  const todayTopApp = topApps[0];
 
   return (
     <section className="dashboard-page">
-      <section className="dashboard-hero">
+      <section className="dashboard-hero dashboard-hero--compact">
         <div className="dashboard-hero__content">
           <span className="dashboard-hero__eyebrow">LIVE SESSION BOARD</span>
           <h2>{dashboardSection.title}</h2>
           <p>{dashboardSection.description}</p>
 
           <div className="dashboard-hero__pills">
-            <span className="dashboard-pill dashboard-pill--blue">前台追踪中</span>
-            <span className="dashboard-pill dashboard-pill--orange">昨日总结可用</span>
-            <span className="dashboard-pill dashboard-pill--ghost">本地离线优先</span>
+            <span className="dashboard-pill dashboard-pill--blue">本地离线记录</span>
+            <span className="dashboard-pill dashboard-pill--orange">今日维度统计</span>
+            <span className="dashboard-pill dashboard-pill--ghost">鼓励语 3 小时刷新</span>
           </div>
         </div>
 
-        <div className="dashboard-hero__preview">
-          <div className="hero-preview-card hero-preview-card--primary">
-            <span>当前前台软件</span>
-            <strong>{currentAppName || "等待活动采集"}</strong>
-            <small>{currentWindowTitle || "暂时还没有可记录的窗口标题"}</small>
-          </div>
+        <div className="dashboard-hero__preview dashboard-hero__preview--single">
           <div className="hero-preview-card hero-preview-card--accent">
             <span>本次前台活跃时长</span>
-            <strong>{totalMinutes} 分钟</strong>
-            <small>仅统计本次开机期间位于前台且未空闲的有效时长</small>
+            <strong>{formatDuration(totalActiveSeconds)}</strong>
+            <small>这里统计的是本次开机以来，真正位于前台且未被判定为空闲的有效活跃时长。</small>
           </div>
         </div>
       </section>
 
-      <div className="dashboard-grid">
+      <div className="apps-page__summary dashboard-grid--raised">
         <article className="dashboard-metric">
-          <span>当前记录目标</span>
-          <strong>{currentAppName || "等待活动采集"}</strong>
-          <small>{currentWindowTitle || "窗口标题会在检测到前台活动后显示"}</small>
+          <span>今日累计时长</span>
+          <strong>{formatDuration(todayActiveSeconds)}</strong>
+          <small>按自然日累计，今天到现在为止被记录到的前台有效活跃时长。</small>
         </article>
-        <article className="dashboard-metric">
-          <span>累计活跃分钟</span>
-          <strong>{totalMinutes} 分钟</strong>
-          <small>如果你在刷网课，停留在课程播放器前台的时间会记到对应浏览器或播放器</small>
-        </article>
+
         <article className="dashboard-metric dashboard-metric--yellow">
-          <span>高频应用数</span>
-          <strong>{apps.length}</strong>
-          <small>当前会话内已经出现过的前台软件种类</small>
+          <span>今日活跃应用数</span>
+          <strong>{visibleTodayApps.length}</strong>
+          <small>今天真正出现在前台并累计到有效时长的应用数量。</small>
         </article>
+
         <article className="dashboard-metric dashboard-metric--green">
-          <span>前三名</span>
-          <strong>{topApps.length ? topApps.map((item) => item.appName).join(" / ") : "等待生成"}</strong>
-          <small>最常驻留的程序会优先出现在这里</small>
+          <span>今日热门应用</span>
+          <strong>{todayTopApp ? todayTopApp.appName : "等待生成"}</strong>
+          <small>
+            {todayTopApp
+              ? `今日已累计 ${formatDuration(todayTopApp.seconds)}`
+              : "开始使用电脑后，这里会自动显示今天排在第一的应用。"}
+          </small>
         </article>
       </div>
 
@@ -72,9 +68,9 @@ export function DashboardPage() {
         <section className="dashboard-content-card">
           <div className="dashboard-content-card__header">
             <span>TIME SPLIT</span>
-            <strong>应用时长分布</strong>
+            <strong>今日应用时长分布</strong>
           </div>
-          <UsageDonut items={apps} />
+          <UsageDonut items={visibleTodayApps} />
         </section>
 
         <section className="dashboard-content-card dashboard-content-card--summary">
@@ -89,7 +85,7 @@ export function DashboardPage() {
       <section className="dashboard-content-card dashboard-content-card--stack">
         <div className="dashboard-content-card__header">
           <span>TOP APPS</span>
-          <strong>本次开机热门应用</strong>
+          <strong>今日热门应用排行</strong>
         </div>
         <ul className="stats-list stats-list--stacked">
           {topApps.map((app, index) => (
@@ -98,19 +94,40 @@ export function DashboardPage() {
                 <span className="stats-rank">{String(index + 1).padStart(2, "0")}</span>
                 <div>
                   <strong className="stats-app-name">{app.appName}</strong>
-                  <small className="stats-app-copy">当前会话累计 {Math.floor(app.seconds / 60)} 分钟</small>
+                  <small className="stats-app-copy">今天累计活跃 {formatDuration(app.seconds)}</small>
                 </div>
               </div>
-              <strong>{Math.floor(app.seconds / 60)} 分钟</strong>
+              <strong>{formatDuration(app.seconds)}</strong>
             </li>
           ))}
           {topApps.length === 0 ? (
             <li className="stats-list__item stats-list__item--empty">
-              <strong>还没有足够数据，先开始使用电脑吧。</strong>
+              <strong>今天还没有记录到有效前台应用，开始使用后这里会自动出现排行。</strong>
             </li>
           ) : null}
         </ul>
       </section>
     </section>
   );
+}
+
+function formatDuration(seconds: number) {
+  const totalMinutes = Math.floor(seconds / 60);
+
+  if (totalMinutes <= 0) {
+    return "0 分钟";
+  }
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours === 0) {
+    return `${totalMinutes} 分钟`;
+  }
+
+  if (minutes === 0) {
+    return `${hours} 小时`;
+  }
+
+  return `${hours} 小时 ${minutes} 分钟`;
 }

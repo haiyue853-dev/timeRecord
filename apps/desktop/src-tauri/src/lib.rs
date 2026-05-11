@@ -23,6 +23,10 @@ pub fn run() {
         ))
         .manage(state)
         .setup(move |app| {
+            if should_exit_for_existing_instance() {
+                std::process::exit(0);
+            }
+
             if cfg!(debug_assertions) {
                 app.handle().plugin(
                     tauri_plugin_log::Builder::default()
@@ -56,4 +60,50 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(target_os = "windows")]
+fn should_exit_for_existing_instance() -> bool {
+    use windows::{
+        core::PCWSTR,
+        Win32::{
+            Foundation::{ERROR_ALREADY_EXISTS, GetLastError, HWND},
+            System::Threading::CreateMutexW,
+            UI::WindowsAndMessaging::{FindWindowW, SetForegroundWindow, ShowWindow, SW_RESTORE, SW_SHOW},
+        },
+    };
+
+    let mutex_name = to_wide("TimeRecord.SingleInstance");
+    let handle = match unsafe { CreateMutexW(None, false, PCWSTR(mutex_name.as_ptr())) } {
+        Ok(handle) => handle,
+        Err(_) => return false,
+    };
+    if handle.is_invalid() {
+        return false;
+    }
+
+    let already_exists = unsafe { GetLastError() } == ERROR_ALREADY_EXISTS;
+    if already_exists {
+        let title = to_wide("TimeRecord");
+        let hwnd: HWND = unsafe { FindWindowW(None, PCWSTR(title.as_ptr())) }.unwrap_or_default();
+        if !hwnd.0.is_null() {
+            unsafe {
+                let _ = ShowWindow(hwnd, SW_RESTORE);
+                let _ = ShowWindow(hwnd, SW_SHOW);
+                let _ = SetForegroundWindow(hwnd);
+            }
+        }
+    }
+
+    already_exists
+}
+
+#[cfg(not(target_os = "windows"))]
+fn should_exit_for_existing_instance() -> bool {
+    false
+}
+
+#[cfg(target_os = "windows")]
+fn to_wide(value: &str) -> Vec<u16> {
+    value.encode_utf16().chain(std::iter::once(0)).collect()
 }

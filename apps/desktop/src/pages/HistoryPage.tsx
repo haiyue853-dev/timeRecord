@@ -25,7 +25,7 @@ export function HistoryPage() {
       <section className="page-hero page-hero--centered">
         <span className="page-hero__eyebrow">SESSION LINE</span>
         <h2>会话走势</h2>
-        <p>这里展示的是本次开机以来真实采集到的前台活跃轨迹，同时补上最近一周对比和学习热力图。</p>
+        <p>这里展示的是本次开机以来的活跃节奏变化，同时补上最近一周对比和学习热力图。</p>
       </section>
 
       <section className="dashboard-content-card dashboard-content-card--centered dashboard-content-card--trend">
@@ -63,7 +63,7 @@ export function HistoryPage() {
           </div>
 
           <div className="history-best-day">
-            <span>最稳的一天</span>
+            <span>最佳一天</span>
             <strong>{formatDate(weeklySummary.bestDay.date)}</strong>
             <small>
               当天累计 {formatHours(weeklySummary.bestDay.totalActiveSeconds)}，其中学习{" "}

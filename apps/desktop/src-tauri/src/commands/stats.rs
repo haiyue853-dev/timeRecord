@@ -53,9 +53,11 @@ pub struct LearningHeatmapCellDto {
 #[serde(rename_all = "camelCase")]
 pub struct DashboardStats {
     pub total_active_seconds: i64,
+    pub today_active_seconds: i64,
     pub current_app_name: String,
     pub current_window_title: String,
     pub apps: Vec<AppUsageItem>,
+    pub today_apps: Vec<AppUsageItem>,
     pub summary: String,
     pub encouragement: String,
     pub summary_source: String,
@@ -70,17 +72,11 @@ pub async fn get_dashboard_stats(state: State<'_, AppState>) -> Result<Dashboard
 
     Ok(DashboardStats {
         total_active_seconds: snapshot.total_active_seconds,
+        today_active_seconds: snapshot.today_active_seconds,
         current_app_name: snapshot.current_app_name,
         current_window_title: snapshot.current_window_title,
-        apps: snapshot
-            .apps
-            .into_iter()
-            .map(|item| AppUsageItem {
-                app_name: item.app_name,
-                seconds: item.seconds,
-                category: item.category,
-            })
-            .collect(),
+        apps: snapshot.apps.into_iter().map(map_app_item).collect(),
+        today_apps: snapshot.today_apps.into_iter().map(map_app_item).collect(),
         summary: snapshot.summary,
         encouragement: snapshot.encouragement,
         summary_source: snapshot.summary_source,
@@ -96,6 +92,14 @@ pub async fn get_dashboard_stats(state: State<'_, AppState>) -> Result<Dashboard
             .map(map_heatmap_cell)
             .collect(),
     })
+}
+
+fn map_app_item(item: crate::app_state::DashboardAppItem) -> AppUsageItem {
+    AppUsageItem {
+        app_name: item.app_name,
+        seconds: item.seconds,
+        category: item.category,
+    }
 }
 
 fn map_trend_point(point: SessionTrendPoint) -> TrendPointDto {

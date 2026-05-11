@@ -8,6 +8,7 @@ describe("HistoryPage", () => {
   afterEach(() => {
     useStatsStore.setState({
       totalActiveSeconds: 0,
+      todayActiveSeconds: 0,
       currentAppName: "等待活动采集",
       currentWindowTitle: "等待检测到前台窗口",
       apps: [
@@ -17,8 +18,15 @@ describe("HistoryPage", () => {
           category: "system",
         },
       ],
-      summary: "昨天还没有记录到有效前台时长，今天先别急着追求完美，先让第一段专注发生。",
-      encouragement: "先开始 25 分钟，状态就会慢慢回来。",
+      todayApps: [
+        {
+          appName: "等待活动采集",
+          seconds: 0,
+          category: "system",
+        },
+      ],
+      summary: "昨天的数据还在积累中，先把今天最重要的一段专注稳稳放到前台。",
+      encouragement: "先专注 25 分钟，状态通常会慢慢回来。",
       summarySource: "local",
       trendPoints: [],
       weeklySummary: {
@@ -41,6 +49,7 @@ describe("HistoryPage", () => {
   it("renders the persisted weekly summary and learning heatmap", () => {
     useStatsStore.setState({
       totalActiveSeconds: 12_000,
+      todayActiveSeconds: 7_200,
       currentAppName: "Microsoft Edge",
       currentWindowTitle: "课程播放页",
       apps: [
@@ -50,8 +59,15 @@ describe("HistoryPage", () => {
           category: "learning",
         },
       ],
+      todayApps: [
+        {
+          appName: "Microsoft Edge",
+          seconds: 7_200,
+          category: "learning",
+        },
+      ],
       summary: "昨天你累计活跃了 120 分钟，比前天多了 20 分钟。",
-      encouragement: "继续保持，今天把昨天最关键的一点用出来。",
+      encouragement: "继续保持，今天把昨天最关键的一点先做出来。",
       summarySource: "local",
       trendPoints: [
         { label: "09:00", activeSeconds: 180 },

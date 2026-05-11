@@ -31,7 +31,7 @@ export function createUsageDonutOption(items: AppUsageItem[]): EChartsOption {
     series: [
       {
         type: "pie",
-        silent: true,
+        silent: false,
         selectedMode: false,
         radius: ["42%", "72%"],
         emphasis: {

@@ -467,12 +467,20 @@ button {
   background: #ffffff;
 }
 
+.dashboard-hero--compact {
+  align-items: start;
+}
+
 .dashboard-hero__content {
   padding-right: 8px;
 }
 
 .dashboard-hero__preview {
   grid-template-columns: 1fr;
+}
+
+.dashboard-hero__preview--single {
+  align-content: start;
 }
 
 .dashboard-hero__pills {
@@ -540,6 +548,10 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.dashboard-grid--raised {
+  margin-top: -4px;
 }
 
 .apps-page__summary {
